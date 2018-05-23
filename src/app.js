@@ -12,6 +12,8 @@ const logger = require('morgan')
 
 const port = process.env.port || 1350
 
+const db = require('./db')
+
 const app = express()
 
 // middlewares config
@@ -24,6 +26,12 @@ app.use(cors())
 app.use(compression())
 app.use(logger('combined'))
 app.use(methodOverride())
+
+const UserController = require('./user/UserController')
+const AuthController = require('./auth/AuthController')
+
+app.use('/api/users', UserController)
+app.use('/api/auth', AuthController)
 
 /*
 // custom cors config
@@ -38,9 +46,23 @@ app.use((req, res, next) => {
 
 // Index route
 app.get('/', (req, res, next) => {
-  res.json({ message: 'Reports Server is active'})
+  res.json({ message: 'Reports Server is active' })
 })
 
+// empty route
+app.all('*', (req, res, next) => {
+  let err = new Error('Route Not Found')
+  err.statusCode = 404
+  next(err)
+})
+
+// error middleware
+app.use((err, req, res, next) => {
+  if (!err.statusCode) err.statusCode = 500
+  res.status(err.statusCode).send({
+    error: err.message || 'Internal Server Error'
+  })
+})
 
 // Listen Server
 const server = app.listen(port, () => {
