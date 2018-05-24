@@ -14,7 +14,7 @@ router.post('/', VerifyToken, (req, res) => {
     {
       name: req.body.name,
       email: req.body.email,
-      password: hashedPassword
+      password: hashedPassword,
     },
     (err, user) => {
       if (err) return res.status(500).send({ error: 'There was a problem creating new users' })
