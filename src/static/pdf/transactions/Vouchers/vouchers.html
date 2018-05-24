@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <title>{{voucher_type}}</title>
+  <style>
+
+  body {
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    position: relative;
+    line-height: 1.45;
+    font-family: sans-serif;
+    color: #001028;
+    background: none;
+    font-size: 6pt;
+  }
+
+  /* Headings */
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    page-break-after: avoid;
+  }
+
+  h1 {
+    font-size: 12pt;
+  }
+
+  h2 {
+    font-size: 10pt;
+  }
+
+  h3 {
+    font-size: 8pt;
+  }
+
+  h4,
+  h5,
+  h6,
+  p,
+  a {
+    font-size: 6pt;
+  }
+
+  p,
+  h2,
+  h3 {
+    orphans: 3;
+    widows: 3;
+  }
+
+  code {
+    font: 12pt Courier, monospace;
+  }
+
+  blockquote {
+    margin: 1.2em;
+    padding: 1em;
+    font-size: 6pt;
+  }
+
+  hr {
+    background-color: #ccc;
+  }
+
+  a {
+    color: #5D6975;
+    text-decoration: underline;
+  }
+
+  header {
+    padding: 10px 0;
+  }
+
+  .clearfix:after {
+    content: "";
+    display: table;
+    clear: both;
+  }
+
+
+  table,
+  tr,
+  th,
+  td {
+    border-collapse: collapse;
+    border-bottom: 1px solid #d3d3d3;
+    border-top: 1px solid #d3d3d3;
+    /*border: 1px solid #d3d3d3;*/
+  }
+
+  table th {
+    text-align: left
+  }
+
+  table th,
+  table td {
+    padding: 8px 8px;
+  }
+
+  .table-fluid {
+    width: 100%;
+  }
+
+  .table-fluid {
+    width: 100%;
+    border: none;
+  }
+
+  .ui-table, .ui-table tr, .ui-table tr td {
+    border: none;
+  }
+
+  .table-striped thead tr,
+  .table-striped tfoot tr {
+    background-color: #f5f5f5;
+  }
+
+  .table-striped tbody tr:nth-child(odd) {
+    background-color: #f8f8f8;
+  }
+
+  .table-striped tbody tr:nth-child(even) {
+    background-color: #f5f5f5;
+  }
+
+  .header-center {
+    text-align: center
+  }
+
+  .heading-light {
+    font-weight: 500
+  }
+
+  .heading-bold {
+    font-weight: 600
+  }
+
+  .text-right {
+    text-align: right;
+  }
+
+  .text-left {
+    text-align: left;
+  }
+
+  .text-center {
+    text-align: center;
+  }
+
+  /*  Utils Classes */
+
+  .border-none {
+    border: none;
+  }
+
+  /* voucher table styles */
+
+  .voucher-table .amount {
+    text-align: right;
+  }
+
+  .voucher-table .particulars {
+    text-align: left;
+  }
+
+  .font-regular {
+    font-style: 'normal'
+  }
+
+
+  </style>
+</head>
+
+<body>
+  <div class="wrapper">
+    <div class="header-center">
+      <h1 class="heading-bold">{{company_name}}</h1>
+      <h4 class="heading-light ">{{company_address}}</h4>
+    </div>
+    <div class="header-center">
+      <h2 class="heading-bold ">{{voucher_kind | title }} Voucher</h1>
+    </div>
+    <main>
+      <div class="voucher-head">
+        <table class="table-fluid ui-table">
+          <tbody>
+            <tr>
+              <td>
+                <div class="head-section text-left">
+                  <p>No: <strong>{{document_no}}</strong></p>
+                </div>
+              </td>
+              <td>
+                <div class="head-section text-right">
+                  <p>Dated: <strong>{{transaction_date}}</strong></p>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="voucher-table">
+        <table class="table-fluid">
+          <thead>
+            <tr class="voucher-header">
+              <th class="particulars">Particulars</th>
+              <th class="amount">Amount</th>
+            </tr>
+          </thead>
+          <tfoot>
+            {% for line in lines %}
+              {% if line.sequence === 99999 %}
+                <tr class="voucher-footer">
+                  <th class="particulars"><span class="font-regular">Amount in words:</span> {{amount_in_words}}</th>
+                  <th class="amount">₹ {{line.amount}}</td>
+                </tr>
+              {% endif %}
+            {% endfor %}
+          </tfoot>
+          <tbody>
+            {% for line in lines %}
+              {% if line.sequence === 99999 %}
+                <tr class="voucher-line border-none">
+                  <td class="particulars border-none">Account: {{line.ledger_name}}</td>
+                  <td class="amount border-none">₹ {{line.amount}}</td>
+                </tr>
+              {% else %}
+                <tr class="voucher-line border-none">
+                  <td class="particulars border-none">Through: {{line.ledger_name}}</td>
+                  <td class="amount border-none">₹ {{line.amount}}</td>
+                </tr>
+              {% endif %}
+            {% endfor %}
+
+            <tr class="voucher-line border-none">
+              <td class="border-none">
+                <p>On Account of:</p>
+                <p>{{narration}}</p>
+              </td>
+              <td class="border-none">&nbsp;</td>
+            </tr>
+
+          </tbody>
+        </table>
+      </div>
+    </main>
+    <div>
+      <footer id="pageFooter-last">
+        <table class="table-fluid ui-table">
+          <tbody>
+            <tr>
+              <td>
+                <div class="footer-section text-left">
+                  <p>Receiver's Signature</p>
+                </div>
+              </td>
+              <td>
+                <div class="footer-section text-right">
+                  <p>Authorised Signatory</p>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </footer>
+    </div>
+  </div>
+</body>
+
+</html>

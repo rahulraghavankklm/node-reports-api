@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <title>{{inventory_type}}</title>
+  <style>
+  .clearfix:after {
+    content: "";
+    display: table;
+    clear: both;
+  }
+
+  a {
+    color: #5D6975;
+    text-decoration: underline;
+  }
+
+  p {
+    margin: 0;
+  }
+
+  body {
+    position: relative;
+    width: 100%;
+    height: auto;
+    margin: 0 auto;
+    color: #001028;
+    background: #FFFFFF;
+    font-family: sans-serif;
+    font-size: 11px;
+  }
+
+  header {
+    padding: 10px 0;
+    margin-bottom: 30px;
+  }
+
+  table,
+  tr,
+  th,
+  td {
+    border-collapse: collapse;
+    border-bottom: 1px solid #d3d3d3;
+    border-top: 1px solid #d3d3d3;
+    /*border: 1px solid #d3d3d3;*/
+  }
+
+  table th {
+    text-align: left
+  }
+
+  table th,
+  table td {
+    padding: 8px 8px;
+  }
+
+  .table-fluid {
+    width: 100%;
+  }
+
+  .table-fluid {
+    width: 100%;
+    border: none;
+    table-layout: fixed;
+  }
+
+
+
+  .ui-table,
+  .ui-table tr,
+  .ui-table tr td {
+    border: none;
+    vertical-align: top;
+  }
+
+
+  .table-striped thead tr,
+  .table-striped tfoot tr {
+    background-color: #f5f5f5;
+  }
+
+  .table-striped tbody tr:nth-child(odd) {
+    background-color: #f8f8f8;
+  }
+
+  .table-striped tbody tr:nth-child(even) {
+    background-color: #f5f5f5;
+  }
+
+  .header-center {
+    text-align: center
+  }
+
+  .heading-light {
+    font-weight: 500
+  }
+
+  .heading-bold {
+    font-weight: 600
+  }
+
+  .text-right {
+    text-align: right;
+  }
+
+  .text-left {
+    text-align: left;
+  }
+
+  .text-center {
+    text-align: center;
+  }
+  /* inventory table styles */
+
+  .inventory-table .number {
+    text-align: right;
+  }
+
+  .inventory-table .text {
+    text-align: left;
+  }
+  </style>
+</head>
+
+<body>
+  <div class="wrapper">
+    <header class="header-section">
+      <table class="table-fluid ui-table">
+        <tbody>
+          <tr>
+            <td>
+              <div class="head-section text-left">
+                <h1 class="heading-bold">{{company.name}}</h1>
+                <h2 class="heading-light ">{{company.address}}</h2>
+              </div>
+            </td>
+            <td>
+              <div class="head-section text-right">
+                <h1 class="heading-light">TAX INVOICE</h1>
+                <div class="invoice-details text-right">
+                  <table class="ui-table">
+                    <tbody>
+                      <tr class="table-row">
+                        <td class="text-left">
+                          <p>GSTIN No:</p>
+                        </td>
+                        <td class="text-right">
+                          <p>{{company.gst_in_no}}</p>
+                        </td>
+                      </tr>
+                      <tr class="table-row">
+                        <td class="text-left">
+                          <p>PAN No:</p>
+                        </td>
+                        <td class="text-right">
+                          <p>{{company.pan_no}}</p>
+                        </td>
+                      </tr>
+                      <tr class="table-row">
+                        <td class="text-left">
+                          <p>Invoice No:</p>
+                        </td>
+                        <td class="text-right">
+                          <p><strong>{{document_no}}</strong></p>
+                        </td>
+                      </tr>
+                      <tr class="table-row">
+                        <td class="text-left">
+                          <p>Date:</p>
+                        </td>
+                        <td class="text-right">
+                          <p><strong>{{document_date}}</strong></p>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </header>
+    <main>
+      <div class="inventory-head">
+        <table class="table-fluid ui-table">
+          <tbody>
+            <tr>
+              <td>
+                <div class="head-section text-left">
+                  <h3>Customer</h3>
+                  <h2>{{customer.name}}</h2>
+                  <table class="ui-table">
+                    <tbody>
+                      <tr>
+                        <td class="text-left">
+                          <p>Customer GSTIN:</p>
+                        </td>
+                        <td class="text-right">
+                          <p>{{customer.gst_in}}</p>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td class="text-left">
+                          <p>Customer PAN:</p>
+                        </td>
+                        <td class="text-right">
+                          <p>{{customer.pan}}</p>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </td>
+              <td>
+                <div class="head-section text-left">
+                  <h3>Billing Address</h3>
+                  <address>{{billing_address}}</address>
+                </div>
+              </td>
+              <td>
+                <div class="head-section text-left">
+                  <h3>Shipping Address</h3>
+                  <address>{{shipping_address}}</address>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="inventory-table">
+        <table class="table-fluid">
+          <thead>
+            <tr class="inventory-header">
+              <th class="text">#</th>
+              <th class="text">Items</th>
+              <th class="number">Qty</th>
+              <th class="number">Rate</th>
+              <th class="number">Net.Amount</th>
+              <th class="number">CGST</th>
+              <th class="number">SGST</th>
+              <th class="number">IGST</th>
+              <th class="number">Total Amount</th>
+            </tr>
+          </thead>
+          <tfoot>
+            <tr class="inventory-footer">
+              <th class="text" colspan="8">Amount in words: {{amount_in_words}}</th>
+              <th class="number">{{total_amount}}</td>
+            </tr>
+          </tfoot>
+          <tbody>
+            {% for line in lines %}
+            <tr class="inventory-line">
+              <td class="text">{{loop.index}}</td>
+              <td class="text">{{line.name}}</td>
+              <td class="number">{{line.quantity}}</td>
+              <td class="number">{{line.rate}}</td>
+              <td class="number">{{line.net_amount}}</td>
+              <td class="number">{{line.tax_cgst}}</td>
+              <td class="number">{{line.tax_sgst}}</td>
+              <td class="number">{{line.tax_igst}}</td>
+              <td class="number">{{line.total_amount}}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </main>
+    <footer>
+      <div id="pageFooter-last">
+        <table class="table-fluid ui-table">
+          <tbody>
+            <tr>
+              <td>
+                <div class="footer-section text-left">
+                  <p>Receiver's Signature</p>
+                </div>
+              </td>
+              <td>
+                <div class="footer-section text-right">
+                  <p>Authorised Signatory</p>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </footer>
+  </div>
+</body>
+
+</html>
