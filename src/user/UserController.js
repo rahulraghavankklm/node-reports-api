@@ -1,4 +1,5 @@
 const express = require('express')
+const bcrypt = require('bcryptjs')
 const router = express.Router()
 const VerifyToken = require('../auth/VerifyToken')
 
@@ -6,14 +7,17 @@ const User = require('./User')
 
 // create user
 router.post('/', VerifyToken, (req, res) => {
+
+  const hashedPassword = bcrypt.hashSync(req.body.password, 8)
+
   User.create(
     {
       name: req.body.name,
       email: req.body.email,
-      password: req.body.password
+      password: hashedPassword
     },
     (err, user) => {
-      if (err) return res.status(500).send('There was a problem adding user to the database')
+      if (err) return res.status(500).send({ error: 'There was a problem creating new users' })
       return res.status(200).send(user)
     }
   )
@@ -21,9 +25,9 @@ router.post('/', VerifyToken, (req, res) => {
 
 // get all users
 router.get('/', VerifyToken, (req, res) => {
-  User.find({}, (err, users) => {
-    if (err) return res.status(500).send('There was a problem finding the users.')
-    if (!users) return res.status(404).send('No users found.')
+  User.find({}, { password: 0 }, (err, users) => {
+    if (err) return res.status(500).send({ error: 'There was a problem finding the users.' })
+    if (!users) return res.status(404).send({ error: 'No users found.' })
     res.status(200).send(users)
   })
 })
@@ -31,17 +35,18 @@ router.get('/', VerifyToken, (req, res) => {
 // get single user
 router.get('/:id', VerifyToken, (req, res) => {
   User.findById(req.params.id, (err, user) => {
-    if (err) return res.status(500).send('There was a problem finding the user.')
-    if (!user) return res.status(404).send('No user found.')
+    if (err) return res.status(500).send({ error: 'There was a problem finding the user.' })
+    if (!user) return res.status(404).send({ error: 'No user found.' })
     res.status(200).send(user)
   })
 })
 
 // delete user
 router.delete('/:id', VerifyToken, (req, res) => {
-  User.findById(req.params.id, (err, user) => {
-    if (err) return res.status(500).send('There was a problem finding the user.')
-    res.status(200).send('User: ' + user.name + ' was deleted.')
+  User.findByIdAndDelete(req.params.id, (err, user) => {
+    if (err) return res.status(500).send({ error: 'There was a problem finding the user.' })
+    if (!user) return res.status(404).send({ error: 'No user found.' })
+    res.status(200).send({ messgae: 'User: ' + user.name + ' was deleted.' })
   })
 })
 
@@ -54,7 +59,7 @@ router.put('/:id', VerifyToken, (req, res) => {
       new: true
     },
     (err, user) => {
-      if (err) return res.status(500).send('There was a problem updating the user.')
+      if (err) return res.status(500).send({ error: 'There was a problem updating the user.' })
       res.status(200).send(user)
     }
   )
